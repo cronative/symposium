@@ -9,15 +9,20 @@ import '../../widgets/symposium_header.dart';
 class Step4BasicProfileScreen extends StatefulWidget {
   final String initialFullName;
   final String initialCity;
-  final String initialAge;
-  final Function(String fullName, String city, String age) onSubmit;
+  final DateTime? initialBirthDate;
+  final Function(
+    String fullName,
+    String city,
+    DateTime? birthDate,
+    int? calculatedAge,
+  ) onSubmit;
   final VoidCallback onBack;
 
   const Step4BasicProfileScreen({
     super.key,
     required this.initialFullName,
     required this.initialCity,
-    required this.initialAge,
+    this.initialBirthDate,
     required this.onSubmit,
     required this.onBack,
   });
@@ -30,7 +35,8 @@ class Step4BasicProfileScreen extends StatefulWidget {
 class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _cityController;
-  late TextEditingController _ageController;
+  late TextEditingController _birthDateController;
+  DateTime? _selectedBirthDate;
 
   final List<String> _cities = [
     'Bengaluru',
@@ -57,8 +63,9 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     _cityController = TextEditingController(
       text: widget.initialCity.isNotEmpty ? widget.initialCity : 'Bengaluru',
     );
-    _ageController = TextEditingController(
-      text: widget.initialAge.isNotEmpty ? widget.initialAge : '29',
+    _selectedBirthDate = widget.initialBirthDate ?? DateTime(1996, 5, 14);
+    _birthDateController = TextEditingController(
+      text: _formatDate(_selectedBirthDate),
     );
   }
 
@@ -66,8 +73,71 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _cityController.dispose();
-    _ageController.dispose();
+    _birthDateController.dispose();
     super.dispose();
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
+  }
+
+  int? _calculateAge(DateTime? date) {
+    if (date == null) return null;
+    final now = DateTime.now();
+    int age = now.year - date.year;
+    if (now.month < date.month ||
+        (now.month == date.month && now.day < date.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  Future<void> _showDatePickerModal() async {
+    final DateTime initial = _selectedBirthDate ?? DateTime(1996, 5, 14);
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1920),
+      lastDate: DateTime.now(),
+      helpText: 'Select your date of birth',
+      cancelText: 'Cancel',
+      confirmText: 'Done',
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              surface: AppColors.surface,
+              onSurface: AppColors.textPrimary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _selectedBirthDate = picked;
+        _birthDateController.text = _formatDate(picked);
+      });
+    }
   }
 
   String _getInitials(String name) {
@@ -167,7 +237,8 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     widget.onSubmit(
       _nameController.text.trim(),
       _cityController.text.trim(),
-      _ageController.text.trim(),
+      _selectedBirthDate,
+      _calculateAge(_selectedBirthDate),
     );
   }
 
@@ -299,14 +370,22 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Field 3: Age
-                CustomTextField(
-                  label: 'Age',
-                  requirementText: 'Optional',
-                  hint: '29',
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  helperText: 'Your age is private and isn\'t shown on your profile.',
+                // Field 3: Birthdate (with automatic age calculation)
+                GestureDetector(
+                  onTap: _showDatePickerModal,
+                  child: AbsorbPointer(
+                    child: CustomTextField(
+                      label: 'Birthdate',
+                      requirementText: 'Optional',
+                      hint: 'Select birthdate',
+                      controller: _birthDateController,
+                      suffix: const Icon(Icons.calendar_today_outlined,
+                          color: AppColors.primary, size: 20),
+                      helperText: _selectedBirthDate != null
+                          ? 'Calculated age: ${_calculateAge(_selectedBirthDate)} years · Kept private on your profile.'
+                          : 'Your age is calculated automatically and kept private.',
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
 

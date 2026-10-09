@@ -14,9 +14,24 @@ class OnboardingModel {
   // Step 4: Basic Profile
   String avatarUrl;
   String fullName;
+  DateTime? birthDate;
   String age;
   String city;
   String bio;
+
+  int? get calculatedAge {
+    if (birthDate == null) {
+      if (age.isNotEmpty) return int.tryParse(age);
+      return null;
+    }
+    final now = DateTime.now();
+    int calculated = now.year - birthDate!.year;
+    if (now.month < birthDate!.month ||
+        (now.month == birthDate!.month && now.day < birthDate!.day)) {
+      calculated--;
+    }
+    return calculated;
+  }
 
   // Step 5: Professional Profile
   String company;
@@ -44,7 +59,8 @@ class OnboardingModel {
     this.avatarUrl =
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
     this.fullName = '',
-    this.age = '24',
+    this.birthDate,
+    this.age = '29',
     this.city = 'Mumbai',
     this.bio = '',
     this.company = '',

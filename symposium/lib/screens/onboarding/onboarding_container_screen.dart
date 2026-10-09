@@ -172,12 +172,13 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
           key: const ValueKey('basicProfile'),
           initialFullName: _model.fullName,
           initialCity: _model.city,
-          initialAge: _model.age,
-          onSubmit: (name, city, age) {
+          initialBirthDate: _model.birthDate,
+          onSubmit: (name, city, birthDate, calculatedAge) {
             setState(() {
               _model.fullName = name;
               _model.city = city;
-              _model.age = age;
+              _model.birthDate = birthDate;
+              _model.age = (calculatedAge ?? 29).toString();
               _currentStep = OnboardingStep.professionalProfile;
             });
           },
