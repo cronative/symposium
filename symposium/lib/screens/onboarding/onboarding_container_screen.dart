@@ -37,8 +37,9 @@ class OnboardingContainerScreen extends StatefulWidget {
 class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
   OnboardingStep _currentStep = OnboardingStep.welcome;
   final OnboardingModel _model = OnboardingModel(
-    fullName: 'Nisha Mehta',
-    city: 'Bengaluru',
+    fullName: 'Nikunj Maheshwari',
+    city: 'Mumbai',
+    email: 'nikunj.maheshwari@example.com',
     age: '29',
     company: 'Independent',
     role: 'Product designer',
@@ -132,7 +133,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
       case OnboardingStep.otp:
         final contactValue = _model.contactType == ContactType.phone
             ? '${_model.countryCode} ${_model.phoneNumber}'
-            : (_model.email.isNotEmpty ? _model.email : 'nisha.mehta@example.com');
+            : (_model.email.isNotEmpty ? _model.email : 'nikunj.maheshwari@example.com');
         return Step3OtpVerifyScreen(
           key: const ValueKey('otp'),
           contactValue: contactValue,

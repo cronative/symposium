@@ -165,7 +165,7 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
                 Text(
                   widget.contactValue.isNotEmpty
                       ? widget.contactValue
-                      : 'nisha.mehta@example.com',
+                      : 'nikunj.maheshwari@example.com',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

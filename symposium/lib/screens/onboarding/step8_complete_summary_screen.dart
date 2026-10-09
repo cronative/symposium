@@ -119,7 +119,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                                     Text(
                                       model.fullName.isNotEmpty
                                           ? model.fullName
-                                          : 'Nisha Mehta',
+                                          : 'Nikunj Maheshwari',
                                       style: const TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: 18,

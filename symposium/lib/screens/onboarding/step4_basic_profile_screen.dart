@@ -39,8 +39,8 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
   DateTime? _selectedBirthDate;
 
   final List<String> _cities = [
-    'Bengaluru',
     'Mumbai',
+    'Bengaluru',
     'Delhi NCR',
     'Pune',
     'Hyderabad',
@@ -58,10 +58,10 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     _nameController = TextEditingController(
       text: widget.initialFullName.isNotEmpty
           ? widget.initialFullName
-          : 'Nisha Mehta',
+          : 'Nikunj Maheshwari',
     );
     _cityController = TextEditingController(
-      text: widget.initialCity.isNotEmpty ? widget.initialCity : 'Bengaluru',
+      text: widget.initialCity.isNotEmpty ? widget.initialCity : 'Mumbai',
     );
     _selectedBirthDate = widget.initialBirthDate ?? DateTime(1996, 5, 14);
     _birthDateController = TextEditingController(
@@ -344,7 +344,7 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
                 CustomTextField(
                   label: 'Full name',
                   requirementText: 'Required',
-                  hint: 'e.g. Nisha Mehta',
+                  hint: 'e.g. Nikunj Maheshwari',
                   controller: _nameController,
                   errorText: _nameError,
                   onChanged: (val) => setState(() => _nameError = null),

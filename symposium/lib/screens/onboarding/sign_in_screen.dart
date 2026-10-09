@@ -26,7 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
   ContactType _contactType = ContactType.email;
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController =
-      TextEditingController(text: 'nisha.mehta@example.com');
+      TextEditingController(text: 'nikunj.maheshwari@example.com');
   String? _errorText;
   bool _isLoading = false;
 
@@ -203,7 +203,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   CustomTextField(
                     label: 'Registered email address',
                     requirementText: 'Required',
-                    hint: 'nisha.mehta@example.com',
+                    hint: 'nikunj.maheshwari@example.com',
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     suffix: const Icon(Icons.mail_outline_rounded,

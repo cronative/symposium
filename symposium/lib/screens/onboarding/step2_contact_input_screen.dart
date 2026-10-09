@@ -28,7 +28,7 @@ class Step2ContactInputScreen extends StatefulWidget {
 class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
   late ContactType _contactType;
   final TextEditingController _emailController =
-      TextEditingController(text: 'nisha.mehta@example.com');
+      TextEditingController(text: 'nikunj.maheshwari@example.com');
   final TextEditingController _phoneController = TextEditingController();
   String? _errorText;
   bool _isLoading = false;
@@ -220,7 +220,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                   CustomTextField(
                     label: 'Email address',
                     requirementText: 'Required',
-                    hint: 'nisha.mehta@example.com',
+                    hint: 'nikunj.maheshwari@example.com',
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     suffix: const Icon(Icons.mail_outline_rounded,
