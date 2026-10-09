@@ -31,13 +31,13 @@ class CustomButton extends StatelessWidget {
 
     switch (variant) {
       case ButtonVariant.secondary:
-        bgColor = AppColors.surfaceElevated;
+        bgColor = AppColors.surface;
         textColor = AppColors.textPrimary;
-        borderSide = const BorderSide(color: AppColors.surfaceBorder, width: 1);
+        borderSide = const BorderSide(color: AppColors.surfaceBorder, width: 1.2);
         break;
       case ButtonVariant.outline:
         bgColor = AppColors.transparent;
-        textColor = AppColors.primaryLight;
+        textColor = AppColors.primary;
         borderSide = const BorderSide(color: AppColors.primary, width: 1.5);
         break;
       case ButtonVariant.ghost:
@@ -60,10 +60,10 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: textColor,
-          disabledBackgroundColor: AppColors.surfaceElevated.withValues(alpha: 0.5),
+          disabledBackgroundColor: AppColors.surfaceElevated,
           disabledForegroundColor: AppColors.textMuted,
-          elevation: variant == ButtonVariant.primary ? 4 : 0,
-          shadowColor: AppColors.primary.withValues(alpha: 0.4),
+          elevation: variant == ButtonVariant.primary ? 2 : 0,
+          shadowColor: AppColors.primary.withValues(alpha: 0.25),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
             side: borderSide,
@@ -77,9 +77,9 @@ class CustomButton extends StatelessWidget {
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    variant == ButtonVariant.outline
-                        ? AppColors.primaryLight
-                        : AppColors.white,
+                    variant == ButtonVariant.primary
+                        ? AppColors.white
+                        : AppColors.primary,
                   ),
                 ),
               )
@@ -97,7 +97,7 @@ class CustomButton extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: isDisabled ? AppColors.textMuted : textColor,
-                      letterSpacing: 0.3,
+                      letterSpacing: 0.2,
                     ),
                   ),
                 ],

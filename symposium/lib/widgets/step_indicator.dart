@@ -18,7 +18,8 @@ class StepIndicator extends StatelessWidget {
     final double progress = (currentStep / totalSteps).clamp(0.0, 1.0);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      color: AppColors.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -28,10 +29,10 @@ class StepIndicator extends StatelessWidget {
               Text(
                 'STEP $currentStep OF $totalSteps',
                 style: const TextStyle(
-                  color: AppColors.primaryLight,
+                  color: AppColors.primary,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
+                  letterSpacing: 1.0,
                 ),
               ),
               if (title != null)
@@ -40,17 +41,17 @@ class StepIndicator extends StatelessWidget {
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 8),
           ClipRRect(
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 4,
+              minHeight: 5,
               backgroundColor: AppColors.surfaceBorder,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),

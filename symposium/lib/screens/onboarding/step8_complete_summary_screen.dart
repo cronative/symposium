@@ -23,24 +23,32 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
         children: [
           // Celebration Icon
           Container(
-            width: 72,
-            height: 72,
+            width: 76,
+            height: 76,
             decoration: BoxDecoration(
-              color: AppColors.accentGlow,
+              color: AppColors.accentSoft,
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.accentBorder, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.accent.withValues(alpha: 0.15),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: const Icon(Icons.check_circle,
-                color: AppColors.accent, size: 44),
+            child: const Icon(Icons.check_circle_rounded,
+                color: AppColors.accent, size: 48),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           const Text(
             'You\'re All Set!',
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 28,
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 6),
@@ -52,19 +60,26 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
-                height: 1.4,
+                height: 1.45,
               ),
             ),
           ),
           const SizedBox(height: 28),
 
-          // Profile Summary Card Preview
+          // Profile Summary Card Preview (Figma-grade Light Card)
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.surfaceBorder, width: 1.5),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,8 +87,8 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 64,
-                      height: 64,
+                      width: 68,
+                      height: 68,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.primary, width: 2),
@@ -83,7 +98,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +120,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                                   color: AppColors.accent, size: 18),
                             ],
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 3),
                           Text(
                             model.role.isNotEmpty
                                 ? '${model.role} at ${model.company}'
@@ -113,13 +128,14 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                             style: const TextStyle(
                               color: AppColors.textSecondary,
                               fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Row(
                             children: [
                               const Icon(Icons.location_on,
-                                  color: AppColors.primaryLight, size: 14),
+                                  color: AppColors.primary, size: 14),
                               const SizedBox(width: 4),
                               Text(
                                 '${model.city} • ${model.age} yrs',
@@ -148,7 +164,10 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                   ),
                 ],
 
-                const Divider(color: AppColors.surfaceBorder, height: 28),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Divider(color: AppColors.surfaceBorder, height: 1),
+                ),
 
                 // Intents
                 const Text(
@@ -169,8 +188,9 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: AppColors.warningGlow,
+                        color: AppColors.warningSoft,
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.warningBorder),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -220,6 +240,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     );
@@ -254,7 +275,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
                           style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -269,7 +290,7 @@ class Step8CompleteSummaryScreen extends StatelessWidget {
           // Action Buttons
           CustomButton(
             title: 'Enter KYN (Know Your Neighbor)',
-            icon: const Icon(Icons.explore, color: AppColors.white, size: 20),
+            icon: const Icon(Icons.explore_rounded, color: AppColors.white, size: 20),
             onPress: onEnterKyn,
           ),
           const SizedBox(height: 8),

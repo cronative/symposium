@@ -116,7 +116,7 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Back Button
+          // Back button
           GestureDetector(
             onTap: widget.onBack,
             child: Container(
@@ -125,19 +125,27 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder),
+                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           const Text(
             'Enter Verification Code',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
@@ -146,15 +154,15 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
               style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
-                height: 1.4,
+                height: 1.45,
               ),
               children: [
-                const TextSpan(text: 'A 6-digit code was sent to '),
+                const TextSpan(text: 'We sent a 6-digit code to '),
                 TextSpan(
                   text: widget.contactValue,
                   style: const TextStyle(
-                    color: AppColors.primaryLight,
-                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -162,16 +170,16 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
           ),
           const SizedBox(height: 32),
 
-          // 6 Digit Cells
+          // 6 Digit PIN Cells (Figma-grade Light Mode)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(6, (index) {
               final bool isFilled = _controllers[index].text.isNotEmpty;
               return Container(
-                width: 46,
-                height: 56,
+                width: 48,
+                height: 58,
                 decoration: BoxDecoration(
-                  color: isFilled ? AppColors.surfaceElevated : AppColors.surface,
+                  color: isFilled ? AppColors.primarySoft : AppColors.surface,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: _errorText != null
@@ -181,6 +189,15 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
                             : AppColors.surfaceBorder,
                     width: 1.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isFilled
+                          ? AppColors.primary.withValues(alpha: 0.1)
+                          : AppColors.shadowLight,
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: TextField(
                   controller: _controllers[index],
@@ -209,8 +226,9 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.errorGlow,
-                borderRadius: BorderRadius.circular(10),
+                color: AppColors.errorSoft,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.errorBorder),
               ),
               child: Row(
                 children: [
@@ -232,13 +250,13 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
             const SizedBox(height: 16),
           ],
 
-          // Resend Row
+          // Resend Timer Row
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'Didn\'t receive the code? ',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
               ),
               GestureDetector(
                 onTap: _handleResend,
@@ -247,7 +265,7 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
                   style: TextStyle(
                     color: _timerSeconds > 0
                         ? AppColors.textMuted
-                        : AppColors.primaryLight,
+                        : AppColors.primary,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
@@ -255,9 +273,9 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          // Tip Hint Box
+          // Demo Hint
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -268,11 +286,11 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
             child: const Row(
               children: [
                 Icon(Icons.lightbulb_outline,
-                    color: AppColors.primaryLight, size: 18),
+                    color: AppColors.primary, size: 18),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Tip: Enter any 6 digits (e.g. 1 2 3 4 5 6) to proceed in this demo.',
+                    'Tip: In this preview demo, entering any 6 digits (e.g. 1 2 3 4 5 6) will verify your account.',
                     style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
                   ),
                 ),

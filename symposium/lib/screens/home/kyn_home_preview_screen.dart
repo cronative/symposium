@@ -71,14 +71,14 @@ class KynHomePreviewScreen extends StatelessWidget {
                   Row(
                     children: [
                       const Icon(Icons.location_on,
-                          color: AppColors.primaryLight, size: 14),
+                          color: AppColors.primary, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         '${userData.city} • Within ${userData.discoveryRadiusKm} km',
                         style: const TextStyle(
-                          color: AppColors.primaryLight,
+                          color: AppColors.primary,
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -87,9 +87,10 @@ class KynHomePreviewScreen extends StatelessWidget {
                   const Text(
                     'Know Your Neighbor',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.w800,
                       color: AppColors.textPrimary,
+                      letterSpacing: -0.5,
                     ),
                   ),
                 ],
@@ -103,7 +104,7 @@ class KynHomePreviewScreen extends StatelessWidget {
                     border: Border.all(color: AppColors.primary, width: 2),
                   ),
                   child: CircleAvatar(
-                    radius: 18,
+                    radius: 20,
                     backgroundImage: NetworkImage(userData.avatarUrl),
                   ),
                 ),
@@ -112,27 +113,34 @@ class KynHomePreviewScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Radar Active Banner
+          // Radar Active Banner (Light Emerald Surface)
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.accentGlowSoft,
-              borderRadius: BorderRadius.circular(14),
+              color: AppColors.accentSoft,
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.accentBorder),
             ),
             child: Row(
               children: [
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.accentGlow,
+                    color: AppColors.surface,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.accent.withValues(alpha: 0.15),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: const Icon(Icons.radar,
-                      color: AppColors.accent, size: 20),
+                      color: AppColors.accent, size: 22),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +149,7 @@ class KynHomePreviewScreen extends StatelessWidget {
                         'KYN Radar Active',
                         style: TextStyle(
                           color: AppColors.accent,
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -174,27 +182,41 @@ class KynHomePreviewScreen extends StatelessWidget {
                   letterSpacing: 1.0,
                 ),
               ),
-              Text(
-                'Radius: ${userData.discoveryRadiusKm} km',
-                style: const TextStyle(
-                  color: AppColors.primaryLight,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primarySoft,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Radius: ${userData.discoveryRadiusKm} km',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
 
-          // Cards List
+          // Cards List (Figma-grade Light Cards)
           ..._nearbyPeople.map((person) {
             return Container(
               margin: const EdgeInsets.only(bottom: 14),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceBorder),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,10 +224,10 @@ class KynHomePreviewScreen extends StatelessWidget {
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: 26,
+                        radius: 28,
                         backgroundImage: NetworkImage(person['avatar']),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,8 +277,9 @@ class KynHomePreviewScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.warningGlow,
+                      color: AppColors.warningSoft,
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.warningBorder),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -283,13 +306,13 @@ class KynHomePreviewScreen extends StatelessWidget {
                   // Say Hi Action Button
                   SizedBox(
                     width: double.infinity,
-                    height: 42,
+                    height: 44,
                     child: ElevatedButton.icon(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 0,
                       ),
@@ -315,14 +338,21 @@ class KynHomePreviewScreen extends StatelessWidget {
             margin: const EdgeInsets.only(top: 16, bottom: 24),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.surfaceBorder),
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               children: [
                 const Icon(Icons.check_circle_outline,
-                    color: AppColors.accent, size: 28),
+                    color: AppColors.accent, size: 30),
                 const SizedBox(height: 8),
                 const Text(
                   '01 · Onboarding Flow Completed',
@@ -334,12 +364,12 @@ class KynHomePreviewScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'All 8 onboarding steps with validation, state management, and centralized global colors are running in Flutter.',
+                  'All 8 onboarding steps with validation, state management, and centralized global colors are running in Flutter Light Theme.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
-                    height: 1.4,
+                    height: 1.45,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -354,7 +384,7 @@ class KynHomePreviewScreen extends StatelessWidget {
                   child: const Text(
                     'Re-test Onboarding Flow',
                     style: TextStyle(
-                      color: AppColors.primaryLight,
+                      color: AppColors.primary,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),

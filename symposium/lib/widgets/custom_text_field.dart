@@ -38,10 +38,10 @@ class CustomTextField extends StatelessWidget {
           Text(
             label!,
             style: const TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
+              letterSpacing: 0.1,
             ),
           ),
           const SizedBox(height: 8),
@@ -52,8 +52,15 @@ class CustomTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: errorText != null ? AppColors.error : AppColors.surfaceBorder,
-              width: 1.5,
+              width: 1.2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
           ),
           child: TextField(
             controller: controller,

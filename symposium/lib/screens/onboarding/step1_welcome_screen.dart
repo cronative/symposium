@@ -1,197 +1,145 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import '../../models/onboarding_model.dart';
 import '../../widgets/custom_button.dart';
 
 class Step1WelcomeScreen extends StatelessWidget {
-  final AuthMode authMode;
-  final ValueChanged<AuthMode> onSelectMode;
-  final ValueChanged<ContactType> onContinue;
+  final VoidCallback onGoToSignUp;
+  final VoidCallback onGoToSignIn;
 
   const Step1WelcomeScreen({
     super.key,
-    required this.authMode,
-    required this.onSelectMode,
-    required this.onContinue,
+    required this.onGoToSignUp,
+    required this.onGoToSignIn,
   });
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         children: [
-          const SizedBox(height: 16),
-          // Brand Logo Emblem
+          const SizedBox(height: 12),
+
+          // Brand Emblem Card
           Container(
-            width: 68,
-            height: 68,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.surfaceBorder, width: 1.5),
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: AppColors.primaryBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: const Icon(
-              Icons.explore_outlined,
-              size: 36,
-              color: AppColors.primaryLight,
+              Icons.explore_rounded,
+              size: 38,
+              color: AppColors.primary,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
+
+          // App Title & Tagline
           const Text(
             'SYMPOSIUM',
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 28,
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
-              letterSpacing: 2.0,
+              letterSpacing: 2.2,
             ),
           ),
           const SizedBox(height: 8),
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               'Real-World Intent. Verified Neighbors. Curated Experiences.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
-                height: 1.4,
+                height: 1.45,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
           const SizedBox(height: 28),
 
-          // Auth Mode Toggle (Create Account vs Sign In)
+          // Value Pillars Feature Cards (Figma-grade Light Cards)
           Container(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.surfaceBorder),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => onSelectMode(AuthMode.signup),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: authMode == AuthMode.signup
-                            ? AppColors.surfaceElevated
-                            : AppColors.transparent,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Create Account',
-                          style: TextStyle(
-                            color: authMode == AuthMode.signup
-                                ? AppColors.textPrimary
-                                : AppColors.textMuted,
-                            fontWeight: authMode == AuthMode.signup
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => onSelectMode(AuthMode.signin),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: authMode == AuthMode.signin
-                            ? AppColors.surfaceElevated
-                            : AppColors.transparent,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: authMode == AuthMode.signin
-                                ? AppColors.textPrimary
-                                : AppColors.textMuted,
-                            fontWeight: authMode == AuthMode.signin
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 24),
-
-          // Value Pillars Highlights
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.surfaceBorder),
-            ),
             child: Column(
               children: [
-                _buildHighlightItem(
+                _buildPillarItem(
                   icon: Icons.people_alt_outlined,
-                  color: AppColors.primaryLight,
-                  bgColor: AppColors.primaryGlow,
+                  color: AppColors.primary,
+                  bgColor: AppColors.primarySoft,
                   title: 'Know Your Neighbor (KYN)',
                   subtitle:
-                      'Connect with nearby verified professionals without exposing exact GPS.',
+                      'Discover nearby verified professionals without exposing your exact GPS.',
                 ),
-                const SizedBox(height: 16),
-                _buildHighlightItem(
-                  icon: Icons.work_outline,
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Divider(color: AppColors.surfaceBorder, height: 1),
+                ),
+                _buildPillarItem(
+                  icon: Icons.work_outline_rounded,
                   color: AppColors.accent,
-                  bgColor: AppColors.accentGlow,
-                  title: 'Seek Intent Marketplace',
+                  bgColor: AppColors.accentSoft,
+                  title: 'Seek Marketplace',
                   subtitle:
-                      'Jobs, gigs, co-founders, and mentorship matched by real-time intent.',
+                      'Gigs, co-founders, hiring, and mentorship matched by active intent.',
                 ),
-                const SizedBox(height: 16),
-                _buildHighlightItem(
-                  icon: Icons.local_activity_outlined,
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Divider(color: AppColors.surfaceBorder, height: 1),
+                ),
+                _buildPillarItem(
+                  icon: Icons.event_available_outlined,
                   color: AppColors.warning,
-                  bgColor: AppColors.warningGlow,
-                  title: 'Curated Experiences',
+                  bgColor: AppColors.warningSoft,
+                  title: 'Curated Real-World Events',
                   subtitle:
-                      'Real-world small group dinners, salon talks, and community sessions.',
+                      'Intimate small group dinners, salon talks, and community sessions.',
                 ),
               ],
             ),
           ),
           const SizedBox(height: 28),
 
-          // Action Buttons
+          // Primary Actions: Distinct Sign Up vs Sign In
           CustomButton(
-            title: 'Continue with Mobile Number',
-            icon: const Icon(Icons.phone_iphone, color: AppColors.white, size: 20),
-            onPress: () => onContinue(ContactType.phone),
+            title: 'Create Account',
+            onPress: onGoToSignUp,
           ),
           const SizedBox(height: 12),
           CustomButton(
-            title: 'Continue with Email',
+            title: 'Sign In to Existing Account',
             variant: ButtonVariant.secondary,
-            icon: const Icon(Icons.mail_outline, color: AppColors.textPrimary, size: 20),
-            onPress: () => onContinue(ContactType.email),
+            onPress: onGoToSignIn,
           ),
           const SizedBox(height: 20),
 
-          // Community Notice
+          // Community & Terms Footer
           const Text(
-            'By continuing, you agree to Symposium\'s Community Guidelines & Privacy Policy.',
+            'By continuing, you agree to Symposium\'s Community Standards & Privacy Policy.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.textMuted,
@@ -205,7 +153,7 @@ class Step1WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHighlightItem({
+  Widget _buildPillarItem({
     required IconData icon,
     required Color color,
     required Color bgColor,
@@ -216,13 +164,13 @@ class Step1WelcomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: color, size: 20),
+          child: Icon(icon, color: color, size: 22),
         ),
         const SizedBox(width: 14),
         Expanded(
@@ -237,7 +185,7 @@ class Step1WelcomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
               Text(
                 subtitle,
                 style: const TextStyle(

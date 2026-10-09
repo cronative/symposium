@@ -4,6 +4,7 @@ import '../../models/onboarding_model.dart';
 import '../../widgets/step_indicator.dart';
 
 import 'step1_welcome_screen.dart';
+import 'sign_in_screen.dart';
 import 'step2_contact_input_screen.dart';
 import 'step3_otp_verify_screen.dart';
 import 'step4_basic_profile_screen.dart';
@@ -15,7 +16,8 @@ import '../home/kyn_home_preview_screen.dart';
 
 enum OnboardingStep {
   welcome,
-  contact,
+  signIn,
+  signUp,
   otp,
   basicProfile,
   professionalProfile,
@@ -40,8 +42,9 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
   int get _stepNumber {
     switch (_currentStep) {
       case OnboardingStep.welcome:
+      case OnboardingStep.signIn:
         return 1;
-      case OnboardingStep.contact:
+      case OnboardingStep.signUp:
         return 2;
       case OnboardingStep.otp:
         return 3;
@@ -63,14 +66,16 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
     switch (_currentStep) {
       case OnboardingStep.welcome:
         return 'Welcome';
-      case OnboardingStep.contact:
-        return 'Identity';
+      case OnboardingStep.signIn:
+        return 'Sign In';
+      case OnboardingStep.signUp:
+        return 'Create Account';
       case OnboardingStep.otp:
-        return 'OTP Verification';
+        return 'Verification';
       case OnboardingStep.basicProfile:
         return 'Basic Profile';
       case OnboardingStep.professionalProfile:
-        return 'Professional Profile';
+        return 'Professional Role';
       case OnboardingStep.interestsIntent:
         return 'Intent & Interests';
       case OnboardingStep.privacySettings:
@@ -91,6 +96,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
   @override
   Widget build(BuildContext context) {
     final bool showIndicator = _currentStep != OnboardingStep.welcome &&
+        _currentStep != OnboardingStep.signIn &&
         _currentStep != OnboardingStep.complete &&
         _currentStep != OnboardingStep.kynHome;
 
@@ -107,7 +113,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
               ),
             Expanded(
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 280),
                 switchInCurve: Curves.easeInOut,
                 switchOutCurve: Curves.easeInOut,
                 child: _buildCurrentScreen(),
@@ -123,21 +129,46 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
     switch (_currentStep) {
       case OnboardingStep.welcome:
         return Step1WelcomeScreen(
-          key: const ValueKey('step1'),
-          authMode: _model.authMode,
-          onSelectMode: (mode) => setState(() => _model.authMode = mode),
-          onContinue: (type) {
+          key: const ValueKey('welcome'),
+          onGoToSignUp: () {
             setState(() {
-              _model.contactType = type;
-              _currentStep = OnboardingStep.contact;
+              _model.authMode = AuthMode.signup;
+              _currentStep = OnboardingStep.signUp;
+            });
+          },
+          onGoToSignIn: () {
+            setState(() {
+              _model.authMode = AuthMode.signin;
+              _currentStep = OnboardingStep.signIn;
             });
           },
         );
 
-      case OnboardingStep.contact:
+      case OnboardingStep.signIn:
+        return SignInScreen(
+          key: const ValueKey('signIn'),
+          onSubmitSignIn: (type, phone, email) {
+            setState(() {
+              _model.authMode = AuthMode.signin;
+              _model.contactType = type;
+              _model.phoneNumber = phone;
+              _model.email = email;
+              _currentStep = OnboardingStep.otp;
+            });
+          },
+          onGoToSignUp: () {
+            setState(() {
+              _model.authMode = AuthMode.signup;
+              _currentStep = OnboardingStep.signUp;
+            });
+          },
+          onBack: () => setState(() => _currentStep = OnboardingStep.welcome),
+        );
+
+      case OnboardingStep.signUp:
         return Step2ContactInputScreen(
-          key: const ValueKey('step2'),
-          authMode: _model.authMode,
+          key: const ValueKey('signUp'),
+          authMode: AuthMode.signup,
           contactType: _model.contactType,
           onChangeContactType: (type) =>
               setState(() => _model.contactType = type),
@@ -149,6 +180,12 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
               _currentStep = OnboardingStep.otp;
             });
           },
+          onGoToSignIn: () {
+            setState(() {
+              _model.authMode = AuthMode.signin;
+              _currentStep = OnboardingStep.signIn;
+            });
+          },
           onBack: () => setState(() => _currentStep = OnboardingStep.welcome),
         );
 
@@ -157,24 +194,33 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
             ? '${_model.countryCode} ${_model.phoneNumber}'
             : _model.email;
         return Step3OtpVerifyScreen(
-          key: const ValueKey('step3'),
+          key: const ValueKey('otp'),
           contactValue: contactValue,
           onVerifySuccess: (otp) {
             setState(() {
               _model.otpCode = otp;
               _model.isOtpVerified = true;
-              _currentStep = OnboardingStep.basicProfile;
+              if (_model.authMode == AuthMode.signin) {
+                // Existing members jump straight to KYN home or profile review
+                _currentStep = OnboardingStep.kynHome;
+              } else {
+                _currentStep = OnboardingStep.basicProfile;
+              }
             });
           },
-          onBack: () => setState(() => _currentStep = OnboardingStep.contact),
+          onBack: () => setState(() {
+            _currentStep = _model.authMode == AuthMode.signin
+                ? OnboardingStep.signIn
+                : OnboardingStep.signUp;
+          }),
           onResendOtp: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(
                   'A fresh 6-digit OTP code has been dispatched.',
-                  style: TextStyle(color: AppColors.white),
+                  style: TextStyle(color: AppColors.textPrimary),
                 ),
-                backgroundColor: AppColors.surfaceElevated,
+                backgroundColor: AppColors.surface,
               ),
             );
           },
@@ -182,7 +228,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
 
       case OnboardingStep.basicProfile:
         return Step4BasicProfileScreen(
-          key: const ValueKey('step4'),
+          key: const ValueKey('basicProfile'),
           initialFullName: _model.fullName,
           initialCity: _model.city,
           initialAge: _model.age,
@@ -203,7 +249,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
 
       case OnboardingStep.professionalProfile:
         return Step5ProfessionalProfileScreen(
-          key: const ValueKey('step5'),
+          key: const ValueKey('professionalProfile'),
           initialCompany: _model.company,
           initialRole: _model.role,
           initialIndustry: _model.industry,
@@ -225,7 +271,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
 
       case OnboardingStep.interestsIntent:
         return Step6InterestsIntentScreen(
-          key: const ValueKey('step6'),
+          key: const ValueKey('interestsIntent'),
           initialIntents: _model.currentIntents,
           initialInterests: _model.interests,
           onSubmit: (intents, interests) {
@@ -241,7 +287,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
 
       case OnboardingStep.privacySettings:
         return Step7PrivacyDiscoveryScreen(
-          key: const ValueKey('step7'),
+          key: const ValueKey('privacySettings'),
           initialEnableKynDiscovery: _model.enableKynDiscovery,
           initialDiscoveryRadiusKm: _model.discoveryRadiusKm,
           initialIsProfilePrivate: _model.isProfilePrivate,
@@ -259,7 +305,7 @@ class _OnboardingContainerScreenState extends State<OnboardingContainerScreen> {
 
       case OnboardingStep.complete:
         return Step8CompleteSummaryScreen(
-          key: const ValueKey('step8'),
+          key: const ValueKey('complete'),
           model: _model,
           onEnterKyn: () =>
               setState(() => _currentStep = OnboardingStep.kynHome),

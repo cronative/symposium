@@ -135,6 +135,7 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Back button
           GestureDetector(
             onTap: widget.onBack,
             child: Container(
@@ -143,44 +144,59 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder),
+                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           const Text(
             'Basic Profile Setup',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Introduce yourself to your neighborhood and future collaborators.',
+            'Introduce yourself to your neighborhood peers and future collaborators.',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          // Avatar Selector
+          // Avatar Selector (Figma-grade Light Mode)
           Center(
             child: Column(
               children: [
                 Stack(
                   children: [
                     Container(
-                      width: 88,
-                      height: 88,
+                      width: 96,
+                      height: 96,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 2),
+                        border: Border.all(color: AppColors.primary, width: 2.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                         image: DecorationImage(
                           image: NetworkImage(_avatarUrl),
                           fit: BoxFit.cover,
@@ -193,34 +209,34 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
                       child: GestureDetector(
                         onTap: _cycleAvatar,
                         child: Container(
-                          width: 30,
-                          height: 30,
+                          width: 32,
+                          height: 32,
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.background, width: 2),
+                            border: Border.all(color: AppColors.surface, width: 2.5),
                           ),
                           child: const Icon(
                             Icons.camera_alt,
                             color: AppColors.white,
-                            size: 15,
+                            size: 16,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 const Text(
-                  'Tap camera to switch avatar',
+                  'Tap camera icon to switch avatar',
                   style: TextStyle(color: AppColors.textMuted, fontSize: 12),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          // Name Input
+          // Full Name
           CustomTextField(
             label: 'Full Name *',
             hint: 'e.g. Nikunj Maheshwari',
@@ -264,7 +280,7 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
           ),
           const SizedBox(height: 10),
 
-          // Popular City Quick Select Pills
+          // Popular City Quick Select Pills (Clean Light Styling)
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -280,26 +296,27 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
                 },
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.surfaceElevated
+                        ? AppColors.primarySoft
                         : AppColors.surface,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isSelected
-                          ? AppColors.primaryLight
+                          ? AppColors.primary
                           : AppColors.surfaceBorder,
+                      width: 1.2,
                     ),
                   ),
                   child: Text(
                     city,
                     style: TextStyle(
                       color: isSelected
-                          ? AppColors.primaryLight
+                          ? AppColors.primary
                           : AppColors.textSecondary,
                       fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
                 ),

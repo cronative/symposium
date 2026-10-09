@@ -108,7 +108,14 @@ class _Step5ProfessionalProfileScreenState
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.surfaceBorder),
+                    border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowLight,
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                   child: const Icon(Icons.arrow_back,
                       color: AppColors.textPrimary),
@@ -130,14 +137,15 @@ class _Step5ProfessionalProfileScreenState
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           const Text(
             'Professional Background',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
@@ -146,10 +154,10 @@ class _Step5ProfessionalProfileScreenState
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
           // Inputs
           CustomTextField(
@@ -172,10 +180,10 @@ class _Step5ProfessionalProfileScreenState
           const Text(
             'Industry / Domain',
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
+              letterSpacing: 0.1,
             ),
           ),
           const SizedBox(height: 10),
@@ -193,21 +201,21 @@ class _Step5ProfessionalProfileScreenState
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primaryGlow
+                        ? AppColors.primarySoft
                         : AppColors.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
                           : AppColors.surfaceBorder,
-                      width: 1.5,
+                      width: 1.2,
                     ),
                   ),
                   child: Text(
                     item,
                     style: TextStyle(
                       color: isSelected
-                          ? AppColors.primaryLight
+                          ? AppColors.primary
                           : AppColors.textSecondary,
                       fontWeight:
                           isSelected ? FontWeight.w700 : FontWeight.w500,
@@ -232,18 +240,25 @@ class _Step5ProfessionalProfileScreenState
           ),
           const SizedBox(height: 16),
 
-          // Verified Badge Note
+          // Verified Badge Note Card (Clean Light Styling)
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.surfaceBorder),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: const Row(
               children: [
-                Icon(Icons.verified, color: AppColors.accent, size: 22),
-                SizedBox(width: 12),
+                Icon(Icons.verified, color: AppColors.accent, size: 24),
+                SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,15 +268,15 @@ class _Step5ProfessionalProfileScreenState
                         style: TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(height: 2),
                       Text(
-                        'Profiles with verified professional links get 3x more connection responses and early experience invites.',
+                        'Profiles with verified professional links get a Verified badge and 3x more connection responses.',
                         style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 11,
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
                           height: 1.4,
                         ),
                       ),

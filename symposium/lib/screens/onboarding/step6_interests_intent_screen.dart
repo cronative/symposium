@@ -139,20 +139,28 @@ class _Step6InterestsIntentScreenState
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder),
+                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: const Icon(Icons.arrow_back,
                   color: AppColors.textPrimary),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           const Text(
             'Intent & Interests',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
@@ -161,10 +169,10 @@ class _Step6InterestsIntentScreenState
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
           // Primary Intent Title
           Row(
@@ -186,32 +194,41 @@ class _Step6InterestsIntentScreenState
           ),
           const SizedBox(height: 12),
 
-          // Intent Cards
+          // Intent Cards (Light Theme Styling)
           Column(
             children: _intentOptions.map((item) {
               final isSelected = _selectedIntents.contains(item['id']);
               return GestureDetector(
                 onTap: () => _toggleIntent(item['id']),
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: 10),
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.surfaceElevated
+                        ? AppColors.primarySoft
                         : AppColors.surface,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
                           : AppColors.surfaceBorder,
-                      width: 1.5,
+                      width: 1.2,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? AppColors.primary.withValues(alpha: 0.08)
+                            : AppColors.shadowLight,
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 36,
-                        height: 36,
+                        width: 38,
+                        height: 38,
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppColors.primary
@@ -233,22 +250,22 @@ class _Step6InterestsIntentScreenState
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: isSelected
-                                ? FontWeight.w600
+                                ? FontWeight.w700
                                 : FontWeight.w500,
                             color: isSelected
-                                ? AppColors.textPrimary
-                                : AppColors.textSecondary,
+                                ? AppColors.primary
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ),
                       Icon(
                         isSelected
-                            ? Icons.check_box
-                            : Icons.check_box_outline_blank,
+                            ? Icons.check_circle_rounded
+                            : Icons.radio_button_unchecked,
                         color: isSelected
-                            ? AppColors.primaryLight
+                            ? AppColors.primary
                             : AppColors.surfaceBorder,
-                        size: 20,
+                        size: 22,
                       ),
                     ],
                   ),
@@ -281,7 +298,7 @@ class _Step6InterestsIntentScreenState
           ),
           const SizedBox(height: 12),
 
-          // Tag Pills
+          // Tag Pills (Light Theme Styling)
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -297,9 +314,19 @@ class _Step6InterestsIntentScreenState
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isSelected
-                          ? AppColors.primaryLight
+                          ? AppColors.primary
                           : AppColors.surfaceBorder,
+                      width: 1.2,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? AppColors.primary.withValues(alpha: 0.2)
+                            : AppColors.shadowLight,
+                        blurRadius: 3,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -332,8 +359,9 @@ class _Step6InterestsIntentScreenState
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.errorGlow,
+                color: AppColors.errorSoft,
                 borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.errorBorder),
               ),
               child: Row(
                 children: [

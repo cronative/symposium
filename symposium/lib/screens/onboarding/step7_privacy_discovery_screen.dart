@@ -58,6 +58,7 @@ class _Step7PrivacyDiscoveryScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Back button
           GestureDetector(
             onTap: widget.onBack,
             child: Container(
@@ -66,40 +67,55 @@ class _Step7PrivacyDiscoveryScreenState
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder),
+                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: const Icon(Icons.arrow_back,
                   color: AppColors.textPrimary),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           const Text(
             'Privacy & Discovery',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Control how and when you appear to others nearby. You are always in control.',
+            'Control how and when you appear to others nearby. You are always in control of your visibility.',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
-          // Main KYN Toggle Card
+          // Main KYN Toggle Card (Figma-grade Light Card)
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.surfaceBorder),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,16 +123,16 @@ class _Step7PrivacyDiscoveryScreenState
                 Row(
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 42,
+                      height: 42,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryGlow,
+                        color: AppColors.primarySoft,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.near_me_outlined,
-                          color: AppColors.primaryLight, size: 22),
+                          color: AppColors.primary, size: 22),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 14),
                     const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,14 +142,14 @@ class _Step7PrivacyDiscoveryScreenState
                             style: TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 15,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           SizedBox(height: 2),
                           Text(
                             'Allow verified peers in your area to discover your profile.',
                             style: TextStyle(
-                              color: AppColors.textMuted,
+                              color: AppColors.textSecondary,
                               fontSize: 12,
                               height: 1.3,
                             ),
@@ -155,12 +171,12 @@ class _Step7PrivacyDiscoveryScreenState
                   ],
                 ),
                 if (_enableKynDiscovery) ...[
-                  const Divider(color: AppColors.surfaceBorder, height: 24),
+                  const Divider(color: AppColors.surfaceBorder, height: 28),
                   const Text(
                     'Discovery Radius',
                     style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
+                      color: AppColors.textPrimary,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -208,20 +224,20 @@ class _Step7PrivacyDiscoveryScreenState
           ),
           const SizedBox(height: 16),
 
-          // Zero-GPS Assurance Card
+          // Zero-GPS Assurance Card (Light Emerald Accent Card)
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.accentGlowSoft,
-              borderRadius: BorderRadius.circular(14),
+              color: AppColors.accentSoft,
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.accentBorder),
             ),
             child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.shield_outlined,
-                    color: AppColors.accent, size: 22),
-                SizedBox(width: 12),
+                    color: AppColors.accent, size: 24),
+                SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,17 +246,17 @@ class _Step7PrivacyDiscoveryScreenState
                         'Zero Exact-GPS Exposure',
                         style: TextStyle(
                           color: AppColors.accent,
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      SizedBox(height: 3),
                       Text(
-                        'Symposium never reveals your apartment or precise street coordinates. Only approximate vicinity (e.g. "Bandra West - 2 km away") is displayed.',
+                        'Symposium never reveals your apartment or precise street coordinates. Only general vicinity (e.g. "Bandra West • 2 km away") is displayed.',
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
-                          height: 1.4,
+                          height: 1.45,
                         ),
                       ),
                     ],
@@ -253,25 +269,32 @@ class _Step7PrivacyDiscoveryScreenState
 
           // Incognito / Private Mode Card
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.surfaceBorder),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
-                    color: AppColors.errorGlow,
+                    color: AppColors.errorSoft,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.visibility_off_outlined,
-                      color: AppColors.error, size: 20),
+                      color: AppColors.error, size: 22),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +304,7 @@ class _Step7PrivacyDiscoveryScreenState
                         style: TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       SizedBox(height: 2),
@@ -289,7 +312,7 @@ class _Step7PrivacyDiscoveryScreenState
                         'Only people you contact or invite to meetings will see your profile.',
                         style: TextStyle(
                           color: AppColors.textMuted,
-                          fontSize: 11,
+                          fontSize: 12,
                           height: 1.3,
                         ),
                       ),

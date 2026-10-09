@@ -4,32 +4,26 @@ import '../../models/onboarding_model.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
-class Step2ContactInputScreen extends StatefulWidget {
-  final AuthMode authMode;
-  final ContactType contactType;
-  final ValueChanged<ContactType> onChangeContactType;
-  final Function(String countryCode, String phone, String email) onSubmitContact;
-  final VoidCallback onGoToSignIn;
+class SignInScreen extends StatefulWidget {
+  final Function(ContactType type, String phone, String email) onSubmitSignIn;
+  final VoidCallback onGoToSignUp;
   final VoidCallback onBack;
 
-  const Step2ContactInputScreen({
+  const SignInScreen({
     super.key,
-    required this.authMode,
-    required this.contactType,
-    required this.onChangeContactType,
-    required this.onSubmitContact,
-    required this.onGoToSignIn,
+    required this.onSubmitSignIn,
+    required this.onGoToSignUp,
     required this.onBack,
   });
 
   @override
-  State<Step2ContactInputScreen> createState() => _Step2ContactInputScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
+class _SignInScreenState extends State<SignInScreen> {
+  ContactType _contactType = ContactType.phone;
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final String _countryCode = '+91';
   String? _errorText;
   bool _isLoading = false;
 
@@ -40,10 +34,10 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
     super.dispose();
   }
 
-  void _handleSendCode() {
+  void _handleSignIn() {
     setState(() => _errorText = null);
 
-    if (widget.contactType == ContactType.phone) {
+    if (_contactType == ContactType.phone) {
       final text = _phoneController.text.trim();
       if (text.length < 10) {
         setState(() => _errorText = 'Please enter a valid 10-digit mobile number.');
@@ -63,8 +57,8 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() => _isLoading = false);
-        widget.onSubmitContact(
-          _countryCode,
+        widget.onSubmitSignIn(
+          _contactType,
           _phoneController.text.trim(),
           _emailController.text.trim(),
         );
@@ -102,9 +96,9 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
           ),
           const SizedBox(height: 24),
 
-          // Title & Value Promise
+          // Title & Greeting
           const Text(
-            'Create your account',
+            'Welcome back',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,
@@ -114,7 +108,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Join your local neighborhood network to connect with verified peers and curated events.',
+            'Sign in to access your verified network, scheduled experiences, and messages.',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
@@ -123,7 +117,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
           ),
           const SizedBox(height: 28),
 
-          // Contact Method Toggle (Clean Light Surface)
+          // Login Type Toggle
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -136,17 +130,19 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      setState(() => _errorText = null);
-                      widget.onChangeContactType(ContactType.phone);
+                      setState(() {
+                        _errorText = null;
+                        _contactType = ContactType.phone;
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
-                        color: widget.contactType == ContactType.phone
+                        color: _contactType == ContactType.phone
                             ? AppColors.surface
                             : AppColors.transparent,
                         borderRadius: BorderRadius.circular(8),
-                        boxShadow: widget.contactType == ContactType.phone
+                        boxShadow: _contactType == ContactType.phone
                             ? [
                                 BoxShadow(
                                   color: AppColors.shadowLight,
@@ -162,7 +158,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                           Icon(
                             Icons.phone_iphone,
                             size: 16,
-                            color: widget.contactType == ContactType.phone
+                            color: _contactType == ContactType.phone
                                 ? AppColors.primary
                                 : AppColors.textMuted,
                           ),
@@ -170,7 +166,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                           Text(
                             'Mobile Number',
                             style: TextStyle(
-                              color: widget.contactType == ContactType.phone
+                              color: _contactType == ContactType.phone
                                   ? AppColors.textPrimary
                                   : AppColors.textMuted,
                               fontWeight: FontWeight.w600,
@@ -185,17 +181,19 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      setState(() => _errorText = null);
-                      widget.onChangeContactType(ContactType.email);
+                      setState(() {
+                        _errorText = null;
+                        _contactType = ContactType.email;
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
-                        color: widget.contactType == ContactType.email
+                        color: _contactType == ContactType.email
                             ? AppColors.surface
                             : AppColors.transparent,
                         borderRadius: BorderRadius.circular(8),
-                        boxShadow: widget.contactType == ContactType.email
+                        boxShadow: _contactType == ContactType.email
                             ? [
                                 BoxShadow(
                                   color: AppColors.shadowLight,
@@ -211,7 +209,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                           Icon(
                             Icons.mail_outline,
                             size: 16,
-                            color: widget.contactType == ContactType.email
+                            color: _contactType == ContactType.email
                                 ? AppColors.primary
                                 : AppColors.textMuted,
                           ),
@@ -219,7 +217,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                           Text(
                             'Email Address',
                             style: TextStyle(
-                              color: widget.contactType == ContactType.email
+                              color: _contactType == ContactType.email
                                   ? AppColors.textPrimary
                                   : AppColors.textMuted,
                               fontWeight: FontWeight.w600,
@@ -236,8 +234,8 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
           ),
           const SizedBox(height: 24),
 
-          // Inputs
-          if (widget.contactType == ContactType.phone) ...[
+          // Input Field
+          if (_contactType == ContactType.phone) ...[
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -257,13 +255,13 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
-                      const Text('🇮🇳', style: TextStyle(fontSize: 16)),
-                      const SizedBox(width: 6),
+                      Text('🇮🇳', style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 6),
                       Text(
-                        _countryCode,
-                        style: const TextStyle(
+                        '+91',
+                        style: TextStyle(
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -275,7 +273,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: CustomTextField(
-                    label: 'Mobile Number',
+                    label: 'Registered Mobile Number',
                     hint: '98765 43210',
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
@@ -288,7 +286,7 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
             ),
           ] else ...[
             CustomTextField(
-              label: 'Email Address',
+              label: 'Registered Email Address',
               hint: 'you@company.com',
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -297,55 +295,28 @@ class _Step2ContactInputScreenState extends State<Step2ContactInputScreen> {
               onChanged: (_) => setState(() => _errorText = null),
             ),
           ],
-          const SizedBox(height: 16),
-
-          // Privacy Note Card
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.accentSoft,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.accentBorder),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.shield_outlined, color: AppColors.accent, size: 20),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Your contact information is encrypted and never shared without your permission.',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 32),
 
           CustomButton(
-            title: 'Send Verification Code',
+            title: 'Sign In with OTP',
             loading: _isLoading,
-            onPress: _handleSendCode,
+            onPress: _handleSignIn,
           ),
           const SizedBox(height: 24),
 
-          // Link to Sign In
+          // Switch to Sign Up
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Already have an account? ',
+                  'Don\'t have an account yet? ',
                   style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
                 ),
                 GestureDetector(
-                  onTap: widget.onGoToSignIn,
+                  onTap: widget.onGoToSignUp,
                   child: const Text(
-                    'Sign In',
+                    'Sign Up',
                     style: TextStyle(
                       color: AppColors.primary,
                       fontSize: 14,
