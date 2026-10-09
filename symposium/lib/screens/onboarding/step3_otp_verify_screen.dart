@@ -28,8 +28,14 @@ class Step3OtpVerifyScreen extends StatefulWidget {
 }
 
 class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
-  final List<TextEditingController> _controllers =
-      List.generate(6, (i) => TextEditingController());
+  final List<TextEditingController> _controllers = [
+    TextEditingController(text: '4'),
+    TextEditingController(text: '8'),
+    TextEditingController(text: '2'),
+    TextEditingController(text: '9'),
+    TextEditingController(text: '1'),
+    TextEditingController(text: '6'),
+  ];
   final List<FocusNode> _focusNodes = List.generate(6, (i) => FocusNode());
 
   int _timerSeconds = 45;
