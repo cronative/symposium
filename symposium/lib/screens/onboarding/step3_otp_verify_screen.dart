@@ -289,20 +289,24 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
                 const SizedBox(height: 16),
 
                 // Support Link
-                const Row(
-                  children: [
-                    Icon(Icons.chat_bubble_outline_rounded,
-                        size: 16, color: AppColors.primary),
-                    SizedBox(width: 8),
-                    Text(
-                      'Still stuck? Contact support',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => _showSupportModal(context),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.chat_bubble_outline_rounded,
+                          size: 16, color: AppColors.primary),
+                      SizedBox(width: 8),
+                      Text(
+                        'Still stuck? Contact support',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -331,6 +335,91 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showSupportModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Need help verifying?',
+                  style: AppTheme.serifTitle.copyWith(fontSize: 20),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'If you are having trouble receiving codes, we have backup options ready:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                ListTile(
+                  leading: const Icon(Icons.chat_outlined,
+                      color: AppColors.primary),
+                  title: const Text('Send code via WhatsApp'),
+                  subtitle: const Text('Instant delivery to your registered contact'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('A verification code was sent via WhatsApp.'),
+                        backgroundColor: AppColors.primary,
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.mark_email_read_outlined,
+                      color: AppColors.primary),
+                  title: const Text('Check Spam or Junk folder'),
+                  subtitle: const Text('Search for sender "hello@symposium.app"'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.headset_mic_outlined,
+                      color: AppColors.textSecondary),
+                  title: const Text('Email Concierge Support'),
+                  subtitle: const Text('support@symposium.app'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Support ticket created. Our team will assist you.'),
+                        backgroundColor: AppColors.primary,
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

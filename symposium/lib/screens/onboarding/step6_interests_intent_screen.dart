@@ -32,49 +32,51 @@ class _Step6InterestsIntentScreenState
 
   final List<Map<String, dynamic>> _intentOptions = [
     {
-      'id': 'hiring',
-      'label': 'Hiring talent or expanding a team',
-      'icon': Icons.person_add_alt_1_outlined,
+      'id': 'neighbors',
+      'label': 'Meeting thoughtful minds in my neighborhood',
+      'icon': Icons.people_outline_rounded,
     },
     {
-      'id': 'jobs',
-      'label': 'Exploring new opportunities & gigs',
-      'icon': Icons.work_outline_rounded,
+      'id': 'coffee',
+      'label': 'Coffee chats, walks & casual catch-ups',
+      'icon': Icons.local_cafe_outlined,
     },
     {
-      'id': 'cofounder',
-      'label': 'Finding a co-founder or collaborator',
+      'id': 'salon_dinners',
+      'label': 'Salon dinners, book talks & gatherings',
+      'icon': Icons.restaurant_outlined,
+    },
+    {
+      'id': 'collaborate',
+      'label': 'Collaborations, projects & co-founding',
       'icon': Icons.hub_outlined,
     },
     {
-      'id': 'investing',
-      'label': 'Angel investing or raising capital',
-      'icon': Icons.trending_up_rounded,
+      'id': 'coworking',
+      'label': 'Coworking sessions & sharing local tips',
+      'icon': Icons.laptop_mac_outlined,
     },
     {
-      'id': 'friends',
-      'label': 'Meeting thoughtful minds in my city',
-      'icon': Icons.chat_bubble_outline_rounded,
-    },
-    {
-      'id': 'experiences',
-      'label': 'Attending salon dinners & community talks',
-      'icon': Icons.restaurant_outlined,
+      'id': 'activities',
+      'label': 'Weekend runs, cycling & outdoor activities',
+      'icon': Icons.directions_run_outlined,
     },
   ];
 
   final List<String> _interestTags = [
-    'Artificial Intelligence',
-    'Product Design',
-    'Venture Capital',
-    'Health & Longevity',
-    'Architecture & Cities',
-    'Electronic Music',
-    'Philosophy & Books',
-    'Running / Fitness',
-    'Culinary & Wine',
-    'Deep Tech',
-    'Creative Writing',
+    'Technology & AI',
+    'Product & Design',
+    'Books & Philosophy',
+    'Specialty Coffee',
+    'Architecture & Urbanism',
+    'Running & Fitness',
+    'Culinary & Dining',
+    'Cinema & Visual Arts',
+    'Startups & Ideas',
+    'Dogs & Pets',
+    'Mindfulness & Meditation',
+    'Writing & Literature',
+    'Music & Vinyl',
   ];
 
   @override

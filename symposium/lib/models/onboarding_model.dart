@@ -72,10 +72,10 @@ class OnboardingModel {
     this.enableKynDiscovery = true,
     this.discoveryRadiusKm = 5,
     this.isProfilePrivate = false,
-  })  : currentIntents = currentIntents ?? ['experiences', 'cofounder'],
+  })  : currentIntents = currentIntents ?? ['neighbors', 'coffee'],
         interests = interests ?? [
-          'Artificial Intelligence',
-          'Product Design',
-          'Venture Capital'
+          'Technology & AI',
+          'Product & Design',
+          'Books & Philosophy'
         ];
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/onboarding_model.dart';
+import '../../widgets/custom_button.dart';
 
 class KynHomePreviewScreen extends StatelessWidget {
   final OnboardingModel userData;
@@ -17,40 +18,40 @@ class KynHomePreviewScreen extends StatelessWidget {
     {
       'id': '1',
       'name': 'Aarav Sharma',
-      'role': 'AI Research Engineer',
-      'company': 'HyperScale AI',
+      'role': 'Product Architect',
+      'company': 'HyperScale Labs',
       'distance': '1.2 km away',
-      'area': 'Indiranagar',
+      'area': 'Pali Hill, Bandra',
       'mutuals': 4,
       'avatar':
           'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-      'intent': 'Looking for Co-founder',
+      'intent': 'Open for Coffee & Co-working',
       'verified': true,
     },
     {
       'id': '2',
       'name': 'Pooja Mehta',
-      'role': 'Principal Designer',
-      'company': 'Studio Craft',
-      'distance': '2.5 km away',
-      'area': 'Koramangala',
+      'role': 'Editorial Designer & Writer',
+      'company': 'Independent Studio',
+      'distance': '2.1 km away',
+      'area': 'Khar West',
       'mutuals': 7,
       'avatar':
           'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
-      'intent': 'Hosting Design Dinners',
+      'intent': 'Hosting Weekend Book Salon',
       'verified': true,
     },
     {
       'id': '3',
-      'name': 'Vikram Patel',
-      'role': 'Angel Investor / VP',
-      'company': 'Nexus Ventures',
-      'distance': '3.1 km away',
-      'area': 'HSR Layout',
-      'mutuals': 2,
+      'name': 'Vikram Singhania',
+      'role': 'Founder & Marathoner',
+      'company': 'Terra Studio',
+      'distance': '3.4 km away',
+      'area': 'Juhu Tara Road',
+      'mutuals': 3,
       'avatar':
           'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face',
-      'intent': 'Mentorship & Angel Checks',
+      'intent': 'Morning Bandstand Runs & Coffee',
       'verified': true,
     },
   ];
@@ -295,7 +296,12 @@ class KynHomePreviewScreen extends StatelessWidget {
                           width: double.infinity,
                           height: 42,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () => _showIntroModal(
+                              context,
+                              person['name'],
+                              person['area'],
+                              person['intent'],
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
@@ -377,6 +383,108 @@ class KynHomePreviewScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _showIntroModal(
+    BuildContext context,
+    String name,
+    String area,
+    String intent,
+  ) {
+    final noteController = TextEditingController(
+      text:
+          'Hey $name! Saw you\'re nearby in $area ($intent). Would love to connect over coffee!',
+    );
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 20,
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Say Hello to $name',
+                  style: AppTheme.serifTitle.copyWith(fontSize: 20),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Nearby in $area • $intent',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceElevated,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.surfaceBorder),
+                  ),
+                  child: TextField(
+                    controller: noteController,
+                    maxLines: 3,
+                    style: const TextStyle(
+                        fontSize: 14, color: AppColors.textPrimary),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Write a warm neighborhood greeting...',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Symposium keeps all conversations respectful and neighborly.',
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                ),
+                const SizedBox(height: 18),
+                CustomButton(
+                  title: 'Send Intro Note',
+                  trailingIcon: const Icon(Icons.send_rounded,
+                      size: 16, color: AppColors.white),
+                  onPress: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Intro note sent to $name!'),
+                        backgroundColor: AppColors.primary,
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -37,6 +37,7 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
   late TextEditingController _cityController;
   late TextEditingController _birthDateController;
   DateTime? _selectedBirthDate;
+  String? _customAvatarUrl;
 
   final List<String> _cities = [
     'Mumbai',
@@ -133,11 +134,104 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     );
 
     if (picked != null) {
+      final age = _calculateAge(picked);
+      if (age != null && age < 18) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Symposium is for members aged 18 and older for community safety.',
+              style: TextStyle(color: AppColors.white),
+            ),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
       setState(() {
         _selectedBirthDate = picked;
         _birthDateController.text = _formatDate(picked);
       });
     }
+  }
+
+  void _showPhotoPickerModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Profile Photo',
+                  style: AppTheme.serifTitle.copyWith(fontSize: 18),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Real, friendly faces help neighbors recognize and trust each other.',
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined,
+                      color: AppColors.primary),
+                  title: const Text('Choose from Photo Gallery'),
+                  onTap: () {
+                    setState(() {
+                      _customAvatarUrl =
+                          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt_outlined,
+                      color: AppColors.primary),
+                  title: const Text('Take a New Photo'),
+                  onTap: () {
+                    setState(() {
+                      _customAvatarUrl =
+                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.account_circle_outlined,
+                      color: AppColors.textSecondary),
+                  title: const Text('Use NM Initials Avatar'),
+                  onTap: () {
+                    setState(() {
+                      _customAvatarUrl = null;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   String _getInitials(String name) {
@@ -287,53 +381,91 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
                 // Avatar Upload Row
                 Row(
                   children: [
-                    Container(
-                      width: 68,
-                      height: 68,
-                      decoration: const BoxDecoration(
-                        color: AppColors.avatarBackground,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          _getInitials(_nameController.text),
-                          style: AppTheme.serifTitle.copyWith(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                    GestureDetector(
+                      onTap: () => _showPhotoPickerModal(context),
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 68,
+                            height: 68,
+                            decoration: BoxDecoration(
+                              color: AppColors.avatarBackground,
+                              shape: BoxShape.circle,
+                              image: _customAvatarUrl != null
+                                  ? DecorationImage(
+                                      image: NetworkImage(_customAvatarUrl!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: _customAvatarUrl == null
+                                ? Center(
+                                    child: Text(
+                                      _getInitials(_nameController.text),
+                                      style: AppTheme.serifTitle.copyWith(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  )
+                                : null,
                           ),
-                        ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 12,
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.camera_alt_outlined,
-                                  size: 18, color: AppColors.primary),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Add a photo · Optional',
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
+                      child: GestureDetector(
+                        onTap: () => _showPhotoPickerModal(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.camera_alt_outlined,
+                                    size: 18, color: AppColors.primary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  _customAvatarUrl != null
+                                      ? 'Change photo · Optional'
+                                      : 'Add a photo · Optional',
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 3),
-                          const Text(
-                            'No photo yet? Your initials work too.',
-                            style: TextStyle(
-                              color: AppColors.textMuted,
-                              fontSize: 12,
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 3),
+                            Text(
+                              _customAvatarUrl != null
+                                  ? 'Looking great! Tap anytime to change.'
+                                  : 'No photo yet? Your initials work too.',
+                              style: const TextStyle(
+                                color: AppColors.textMuted,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
