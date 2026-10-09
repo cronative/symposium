@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/info_card.dart';
+import '../../widgets/segmented_progress_bar.dart';
+import '../../widgets/symposium_header.dart';
 
 class Step3OtpVerifyScreen extends StatefulWidget {
   final String contactValue;
   final ValueChanged<String> onVerifySuccess;
   final VoidCallback onBack;
+  final VoidCallback onChangeContact;
   final VoidCallback onResendOtp;
 
   const Step3OtpVerifyScreen({
@@ -14,6 +19,7 @@ class Step3OtpVerifyScreen extends StatefulWidget {
     required this.contactValue,
     required this.onVerifySuccess,
     required this.onBack,
+    required this.onChangeContact,
     required this.onResendOtp,
   });
 
@@ -23,8 +29,8 @@ class Step3OtpVerifyScreen extends StatefulWidget {
 
 class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
   final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+      List.generate(6, (i) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (i) => FocusNode());
 
   int _timerSeconds = 45;
   Timer? _timer;
@@ -86,11 +92,11 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
 
     setState(() => _isLoading = true);
 
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         setState(() => _isLoading = false);
         if (code == '000000') {
-          setState(() => _errorText = 'Incorrect OTP. Try 123456 or resend code.');
+          setState(() => _errorText = 'Incorrect OTP code. Try again or request a new code.');
         } else {
           widget.onVerifySuccess(code);
         }
@@ -99,213 +105,226 @@ class _Step3OtpVerifyScreenState extends State<Step3OtpVerifyScreen> {
   }
 
   void _handleResend() {
-    if (_timerSeconds == 0) {
-      for (var c in _controllers) {
-        c.clear();
-      }
-      setState(() => _errorText = null);
-      _startCountdown();
-      widget.onResendOtp();
+    for (var c in _controllers) {
+      c.clear();
     }
+    setState(() => _errorText = null);
+    _startCountdown();
+    widget.onResendOtp();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Back button
-          GestureDetector(
-            onTap: widget.onBack,
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadowLight,
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          const Text(
-            'Enter Verification Code',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 8),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-                height: 1.45,
-              ),
+    return Column(
+      children: [
+        SymposiumHeader(
+          onBack: widget.onBack,
+          actionText: 'Help',
+          onAction: () {},
+        ),
+        const SegmentedProgressBar(
+          sectionName: 'Your Account',
+          currentStep: 2,
+          totalSteps: 8,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TextSpan(text: 'We sent a 6-digit code to '),
-                TextSpan(
-                  text: widget.contactValue,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
+                const SizedBox(height: 12),
+
+                // Headline
+                Text(
+                  'A small check.\nA fresh start.',
+                  style: AppTheme.serifTitle.copyWith(
+                    fontSize: 32,
+                    height: 1.2,
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 32),
+                const SizedBox(height: 8),
 
-          // 6 Digit PIN Cells (Figma-grade Light Mode)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(6, (index) {
-              final bool isFilled = _controllers[index].text.isNotEmpty;
-              return Container(
-                width: 48,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: isFilled ? AppColors.primarySoft : AppColors.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: _errorText != null
-                        ? AppColors.error
-                        : isFilled
-                            ? AppColors.primary
-                            : AppColors.surfaceBorder,
-                    width: 1.5,
+                // Subtitle
+                const Text(
+                  'Enter the 6-digit code we sent to your email.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isFilled
-                          ? AppColors.primary.withValues(alpha: 0.1)
-                          : AppColors.shadowLight,
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
+                ),
+                const SizedBox(height: 12),
+
+                // Contact display & change link
+                Text(
+                  widget.contactValue.isNotEmpty
+                      ? widget.contactValue
+                      : 'nisha.mehta@example.com',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                GestureDetector(
+                  onTap: widget.onChangeContact,
+                  child: const Text(
+                    'Change email address',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                // Verification code label
+                const Text(
+                  'Verification code',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // 6 Boxes
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(6, (index) {
+                    final isFilled = _controllers[index].text.isNotEmpty;
+                    return Container(
+                      width: 48,
+                      height: 58,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: _errorText != null
+                              ? AppColors.error
+                              : isFilled
+                                  ? AppColors.primary
+                                  : AppColors.surfaceBorder,
+                          width: 1.3,
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        maxLength: 1,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (val) => _handleDigitChanged(val, index),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: 8),
+
+                const Text(
+                  'Codes are valid for 10 minutes. Use the newest code if you\'ve requested more than one.',
+                  style: TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Resend row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Didn\'t get the code?',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _handleResend,
+                      child: Text(
+                        _timerSeconds > 0
+                            ? 'Resend code (${_timerSeconds}s)'
+                            : 'Resend code',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                child: TextField(
-                  controller: _controllers[index],
-                  focusNode: _focusNodes[index],
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  maxLength: 1,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  decoration: const InputDecoration(
-                    counterText: '',
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (val) => _handleDigitChanged(val, index),
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
-          // Error Message Banner
-          if (_errorText != null) ...[
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.errorSoft,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.errorBorder),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: AppColors.error, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _errorText!,
-                      style: const TextStyle(
-                        color: AppColors.error,
+                // Warm Info Card
+                const InfoCard(
+                  icon: Icons.refresh_rounded,
+                  title: 'A code that won\'t work?',
+                  description:
+                      'Check for typos and try again. If the code is expired, resend it. Look in spam if the email hasn\'t arrived.',
+                  backgroundColor: AppColors.surfaceWarm,
+                ),
+                const SizedBox(height: 16),
+
+                // Support Link
+                const Row(
+                  children: [
+                    Icon(Icons.chat_bubble_outline_rounded,
+                        size: 16, color: AppColors.primary),
+                    SizedBox(width: 8),
+                    Text(
+                      'Still stuck? Contact support',
+                      style: TextStyle(
+                        color: AppColors.primary,
                         fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-
-          // Resend Timer Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Didn\'t receive the code? ',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
-              ),
-              GestureDetector(
-                onTap: _handleResend,
-                child: Text(
-                  _timerSeconds > 0 ? 'Resend in ${_timerSeconds}s' : 'Resend Code',
-                  style: TextStyle(
-                    color: _timerSeconds > 0
-                        ? AppColors.textMuted
-                        : AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
+                const SizedBox(height: 32),
 
-          // Demo Hint
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.surfaceBorder),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.lightbulb_outline,
-                    color: AppColors.primary, size: 18),
-                SizedBox(width: 10),
-                Expanded(
+                // CTA
+                CustomButton(
+                  title: 'Verify & continue',
+                  trailingIcon: const Icon(Icons.arrow_forward,
+                      size: 18, color: AppColors.white),
+                  loading: _isLoading,
+                  onPress: _verifyCode,
+                ),
+                const SizedBox(height: 12),
+
+                const Center(
                   child: Text(
-                    'Tip: In this preview demo, entering any 6 digits (e.g. 1 2 3 4 5 6) will verify your account.',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    'Verification keeps our community more human.',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-          const SizedBox(height: 36),
-
-          CustomButton(
-            title: 'Verify & Continue',
-            loading: _isLoading,
-            onPress: _verifyCode,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

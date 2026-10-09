@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/segmented_progress_bar.dart';
+import '../../widgets/symposium_header.dart';
 
 class Step4BasicProfileScreen extends StatefulWidget {
   final String initialFullName;
   final String initialCity;
   final String initialAge;
-  final String initialBio;
-  final String initialAvatarUrl;
-  final Function(
-    String fullName,
-    String city,
-    String age,
-    String bio,
-    String avatarUrl,
-  ) onSubmit;
+  final Function(String fullName, String city, String age) onSubmit;
   final VoidCallback onBack;
 
   const Step4BasicProfileScreen({
@@ -23,52 +18,48 @@ class Step4BasicProfileScreen extends StatefulWidget {
     required this.initialFullName,
     required this.initialCity,
     required this.initialAge,
-    required this.initialBio,
-    required this.initialAvatarUrl,
     required this.onSubmit,
     required this.onBack,
   });
 
   @override
-  State<Step4BasicProfileScreen> createState() => _Step4BasicProfileScreenState();
+  State<Step4BasicProfileScreen> createState() =>
+      _Step4BasicProfileScreenState();
 }
 
 class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _cityController;
   late TextEditingController _ageController;
-  late TextEditingController _bioController;
-  late String _avatarUrl;
 
-  final List<String> _popularCities = [
-    'Mumbai',
+  final List<String> _cities = [
     'Bengaluru',
+    'Mumbai',
     'Delhi NCR',
     'Pune',
     'Hyderabad',
-  ];
-
-  final List<String> _avatarPresets = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop&crop=face',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face',
+    'Chennai',
+    'Kolkata',
+    'Ahmedabad',
   ];
 
   String? _nameError;
   String? _cityError;
-  String? _ageError;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.initialFullName);
-    _cityController = TextEditingController(text: widget.initialCity);
-    _ageController = TextEditingController(text: widget.initialAge);
-    _bioController = TextEditingController(text: widget.initialBio);
-    _avatarUrl = widget.initialAvatarUrl.isNotEmpty
-        ? widget.initialAvatarUrl
-        : _avatarPresets.first;
+    _nameController = TextEditingController(
+      text: widget.initialFullName.isNotEmpty
+          ? widget.initialFullName
+          : 'Nisha Mehta',
+    );
+    _cityController = TextEditingController(
+      text: widget.initialCity.isNotEmpty ? widget.initialCity : 'Bengaluru',
+    );
+    _ageController = TextEditingController(
+      text: widget.initialAge.isNotEmpty ? widget.initialAge : '29',
+    );
   }
 
   @override
@@ -76,15 +67,87 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     _nameController.dispose();
     _cityController.dispose();
     _ageController.dispose();
-    _bioController.dispose();
     super.dispose();
+  }
+
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.isEmpty || parts[0].isEmpty) return 'NM';
+    if (parts.length == 1) return parts[0][0].toUpperCase();
+    return '${parts[0][0]}${parts[parts.length - 1][0]}'.toUpperCase();
+  }
+
+  void _showCityPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16),
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceBorder,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Select your city',
+                style: AppTheme.serifTitle.copyWith(fontSize: 18),
+              ),
+              const SizedBox(height: 8),
+              const Divider(color: AppColors.surfaceBorder),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _cities.length,
+                  itemBuilder: (context, index) {
+                    final city = _cities[index];
+                    return ListTile(
+                      title: Text(
+                        city,
+                        style: TextStyle(
+                          color: _cityController.text == city
+                              ? AppColors.primary
+                              : AppColors.textPrimary,
+                          fontWeight: _cityController.text == city
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
+                      ),
+                      trailing: _cityController.text == city
+                          ? const Icon(Icons.check, color: AppColors.primary)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          _cityController.text = city;
+                          _cityError = null;
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _handleContinue() {
     setState(() {
       _nameError = null;
       _cityError = null;
-      _ageError = null;
     });
 
     bool hasError = false;
@@ -95,20 +158,8 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
     }
 
     if (_cityController.text.trim().isEmpty) {
-      setState(() => _cityError = 'City is required for neighborhood discovery.');
+      setState(() => _cityError = 'City is required.');
       hasError = true;
-    }
-
-    final ageStr = _ageController.text.trim();
-    if (ageStr.isEmpty) {
-      setState(() => _ageError = 'Age is required (18+).');
-      hasError = true;
-    } else {
-      final ageNum = int.tryParse(ageStr);
-      if (ageNum == null || ageNum < 18 || ageNum > 100) {
-        setState(() => _ageError = 'You must be at least 18 years old.');
-        hasError = true;
-      }
     }
 
     if (hasError) return;
@@ -117,230 +168,183 @@ class _Step4BasicProfileScreenState extends State<Step4BasicProfileScreen> {
       _nameController.text.trim(),
       _cityController.text.trim(),
       _ageController.text.trim(),
-      _bioController.text.trim(),
-      _avatarUrl,
     );
-  }
-
-  void _cycleAvatar() {
-    final curIndex = _avatarPresets.indexOf(_avatarUrl);
-    final nextIndex = (curIndex + 1) % _avatarPresets.length;
-    setState(() => _avatarUrl = _avatarPresets[nextIndex]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Back button
-          GestureDetector(
-            onTap: widget.onBack,
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadowLight,
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          const Text(
-            'Basic Profile Setup',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Introduce yourself to your neighborhood peers and future collaborators.',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-              height: 1.45,
-            ),
-          ),
-          const SizedBox(height: 28),
-
-          // Avatar Selector (Figma-grade Light Mode)
-          Center(
+    return Column(
+      children: [
+        SymposiumHeader(
+          onBack: widget.onBack,
+          actionText: 'Help',
+          onAction: () {},
+        ),
+        const SegmentedProgressBar(
+          sectionName: 'A Little About You',
+          currentStep: 3,
+          totalSteps: 8,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
+                const SizedBox(height: 12),
+
+                // Headline
+                Text(
+                  'Put a name\nto your hello.',
+                  style: AppTheme.serifTitle.copyWith(
+                    fontSize: 32,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Subtitle
+                const Text(
+                  'Start with the essentials. You can add more or make changes later.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Avatar Upload Row
+                Row(
                   children: [
                     Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
+                      width: 68,
+                      height: 68,
+                      decoration: const BoxDecoration(
+                        color: AppColors.avatarBackground,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 2.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.15),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _getInitials(_nameController.text),
+                          style: AppTheme.serifTitle.copyWith(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
                           ),
-                        ],
-                        image: DecorationImage(
-                          image: NetworkImage(_avatarUrl),
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: _cycleAvatar,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.surface, width: 2.5),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.camera_alt_outlined,
+                                  size: 18, color: AppColors.primary),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Add a photo · Optional',
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: AppColors.white,
-                            size: 16,
+                          const SizedBox(height: 3),
+                          const Text(
+                            'No photo yet? Your initials work too.',
+                            style: TextStyle(
+                              color: AppColors.textMuted,
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Tap camera icon to switch avatar',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                const SizedBox(height: 24),
+
+                // Field 1: Full name
+                CustomTextField(
+                  label: 'Full name',
+                  requirementText: 'Required',
+                  hint: 'e.g. Nisha Mehta',
+                  controller: _nameController,
+                  errorText: _nameError,
+                  onChanged: (val) => setState(() => _nameError = null),
                 ),
+                const SizedBox(height: 16),
+
+                // Field 2: City
+                GestureDetector(
+                  onTap: _showCityPicker,
+                  child: AbsorbPointer(
+                    child: CustomTextField(
+                      label: 'City',
+                      requirementText: 'Required',
+                      hint: 'Select your city',
+                      controller: _cityController,
+                      suffix: const Icon(Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.primary, size: 22),
+                      helperText:
+                          'Choose manually. No location permission needed.',
+                      errorText: _cityError,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Field 3: Age
+                CustomTextField(
+                  label: 'Age',
+                  requirementText: 'Optional',
+                  hint: '29',
+                  controller: _ageController,
+                  keyboardType: TextInputType.number,
+                  helperText: 'Your age is private and isn\'t shown on your profile.',
+                ),
+                const SizedBox(height: 24),
+
+                // Privacy Note
+                const Text(
+                  'Only your name and city can appear in discovery. Your age stays private.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Submit CTA
+                CustomButton(
+                  title: 'Save & continue',
+                  trailingIcon: const Icon(Icons.arrow_forward,
+                      size: 18, color: AppColors.white),
+                  onPress: _handleContinue,
+                ),
+                const SizedBox(height: 12),
+
+                const Center(
+                  child: Text(
+                    'Name and selected city are needed to continue.',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-          const SizedBox(height: 28),
-
-          // Full Name
-          CustomTextField(
-            label: 'Full Name *',
-            hint: 'e.g. Nikunj Maheshwari',
-            controller: _nameController,
-            errorText: _nameError,
-            prefix: const Icon(Icons.person_outline, color: AppColors.textMuted),
-            onChanged: (_) => setState(() => _nameError = null),
-          ),
-          const SizedBox(height: 16),
-
-          // City and Age Row
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 12,
-                child: CustomTextField(
-                  label: 'City *',
-                  hint: 'e.g. Mumbai',
-                  controller: _cityController,
-                  errorText: _cityError,
-                  prefix: const Icon(Icons.location_on_outlined,
-                      color: AppColors.textMuted),
-                  onChanged: (_) => setState(() => _cityError = null),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 8,
-                child: CustomTextField(
-                  label: 'Age (18+) *',
-                  hint: '26',
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 2,
-                  errorText: _ageError,
-                  onChanged: (_) => setState(() => _ageError = null),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Popular City Quick Select Pills (Clean Light Styling)
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _popularCities.map((city) {
-              final isSelected = _cityController.text.trim().toLowerCase() ==
-                  city.toLowerCase();
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _cityController.text = city;
-                    _cityError = null;
-                  });
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primarySoft
-                        : AppColors.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.surfaceBorder,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Text(
-                    city,
-                    style: TextStyle(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
-                      fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 16),
-
-          // Bio Input
-          CustomTextField(
-            label: 'Short Bio (Optional)',
-            hint: 'Building tech, exploring design and hosting dinners.',
-            controller: _bioController,
-            maxLines: 3,
-          ),
-          const SizedBox(height: 32),
-
-          CustomButton(
-            title: 'Save & Continue',
-            onPress: _handleContinue,
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

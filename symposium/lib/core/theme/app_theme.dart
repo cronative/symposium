@@ -5,6 +5,19 @@ import 'app_colors.dart';
 class AppTheme {
   AppTheme._();
 
+  static TextStyle get serifTitle => GoogleFonts.lora(
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w500,
+        letterSpacing: -0.5,
+      );
+
+  static TextStyle get wordmark => GoogleFonts.lora(
+        color: AppColors.primary,
+        fontWeight: FontWeight.w600,
+        fontSize: 21,
+        letterSpacing: -0.3,
+      );
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -13,9 +26,7 @@ class AppTheme {
       primaryColor: AppColors.primary,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        secondary: AppColors.accent,
         surface: AppColors.surface,
-        error: AppColors.error,
         onPrimary: AppColors.white,
         onSurface: AppColors.textPrimary,
       ),
@@ -23,48 +34,24 @@ class AppTheme {
       cardColor: AppColors.surface,
       textTheme: GoogleFonts.interTextTheme(
         ThemeData.light().textTheme.copyWith(
-          displayLarge: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
-          ),
-          displayMedium: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
-          ),
-          titleLarge: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
-          ),
-          titleMedium: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w600,
-          ),
+          displayLarge: serifTitle.copyWith(fontSize: 34, height: 1.15),
+          displayMedium: serifTitle.copyWith(fontSize: 28, height: 1.2),
+          titleLarge: serifTitle.copyWith(fontSize: 22, height: 1.25),
           bodyLarge: const TextStyle(
             color: AppColors.textPrimary,
-            fontWeight: FontWeight.w500,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
           ),
           bodyMedium: const TextStyle(
             color: AppColors.textSecondary,
-            fontWeight: FontWeight.w400,
+            fontSize: 14,
+            height: 1.45,
           ),
           bodySmall: const TextStyle(
             color: AppColors.textMuted,
-            fontWeight: FontWeight.w400,
+            fontSize: 12,
+            height: 1.4,
           ),
-        ),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: false,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
-        titleTextStyle: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );

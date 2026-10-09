@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 
-enum ButtonVariant { primary, secondary, outline, ghost }
+enum ButtonVariant { primary, outline, secondary }
 
 class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPress;
   final ButtonVariant variant;
   final bool loading;
-  final Widget? icon;
-  final double? width;
+  final Widget? trailingIcon;
+  final Widget? leadingIcon;
   final double height;
 
   const CustomButton({
@@ -18,9 +18,9 @@ class CustomButton extends StatelessWidget {
     required this.onPress,
     this.variant = ButtonVariant.primary,
     this.loading = false,
-    this.icon,
-    this.width,
-    this.height = 52,
+    this.trailingIcon,
+    this.leadingIcon,
+    this.height = 54,
   });
 
   @override
@@ -30,19 +30,15 @@ class CustomButton extends StatelessWidget {
     BorderSide borderSide = BorderSide.none;
 
     switch (variant) {
-      case ButtonVariant.secondary:
-        bgColor = AppColors.surface;
-        textColor = AppColors.textPrimary;
-        borderSide = const BorderSide(color: AppColors.surfaceBorder, width: 1.2);
-        break;
       case ButtonVariant.outline:
-        bgColor = AppColors.transparent;
+        bgColor = AppColors.surface;
         textColor = AppColors.primary;
         borderSide = const BorderSide(color: AppColors.primary, width: 1.5);
         break;
-      case ButtonVariant.ghost:
-        bgColor = AppColors.transparent;
-        textColor = AppColors.textSecondary;
+      case ButtonVariant.secondary:
+        bgColor = AppColors.surfaceWarm;
+        textColor = AppColors.textPrimary;
+        borderSide = const BorderSide(color: AppColors.surfaceBorder, width: 1.2);
         break;
       case ButtonVariant.primary:
         bgColor = AppColors.primary;
@@ -53,17 +49,14 @@ class CustomButton extends StatelessWidget {
     final bool isDisabled = onPress == null || loading;
 
     return SizedBox(
-      width: width ?? double.infinity,
+      width: double.infinity,
       height: height,
       child: ElevatedButton(
         onPressed: isDisabled ? null : onPress,
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: textColor,
-          disabledBackgroundColor: AppColors.surfaceElevated,
-          disabledForegroundColor: AppColors.textMuted,
-          elevation: variant == ButtonVariant.primary ? 2 : 0,
-          shadowColor: AppColors.primary.withValues(alpha: 0.25),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
             side: borderSide,
@@ -71,35 +64,34 @@ class CustomButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
         ),
         child: loading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    variant == ButtonVariant.primary
-                        ? AppColors.white
-                        : AppColors.primary,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
                 ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 10),
+                  if (leadingIcon != null) ...[
+                    leadingIcon!,
+                    const SizedBox(width: 8),
                   ],
                   Text(
                     title,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: isDisabled ? AppColors.textMuted : textColor,
-                      letterSpacing: 0.2,
+                      color: textColor,
+                      letterSpacing: 0.1,
                     ),
                   ),
+                  if (trailingIcon != null) ...[
+                    const SizedBox(width: 8),
+                    trailingIcon!,
+                  ],
                 ],
               ),
       ),

@@ -2,30 +2,34 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String? label;
+  final String label;
+  final String? requirementText; // 'Required' or 'Optional'
   final String? hint;
+  final String? helperText;
   final String? errorText;
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool obscureText;
-  final Widget? prefix;
   final Widget? suffix;
-  final int maxLines;
-  final int? maxLength;
+  final Widget? prefix;
+  final bool readOnly;
+  final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
 
   const CustomTextField({
     super.key,
-    this.label,
+    required this.label,
+    this.requirementText,
     this.hint,
+    this.helperText,
     this.errorText,
     this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
-    this.prefix,
     this.suffix,
-    this.maxLines = 1,
-    this.maxLength,
+    this.prefix,
+    this.readOnly = false,
+    this.onTap,
     this.onChanged,
   });
 
@@ -34,40 +38,49 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
+        // Label Row with requirement on right
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-        ],
+            if (requirementText != null)
+              Text(
+                requirementText!,
+                style: const TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        // Input Box
         Container(
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: errorText != null ? AppColors.error : AppColors.surfaceBorder,
+              color: errorText != null
+                  ? AppColors.error
+                  : AppColors.surfaceBorder,
               width: 1.2,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadowLight,
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
           ),
           child: TextField(
             controller: controller,
             keyboardType: keyboardType,
             obscureText: obscureText,
-            maxLines: maxLines,
-            maxLength: maxLength,
+            readOnly: readOnly,
+            onTap: onTap,
             onChanged: onChanged,
             style: const TextStyle(
               color: AppColors.textPrimary,
@@ -82,27 +95,33 @@ class CustomTextField extends StatelessWidget {
               ),
               prefixIcon: prefix,
               suffixIcon: suffix,
-              counterText: '',
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 14,
               ),
               border: InputBorder.none,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-              ),
             ),
           ),
         ),
+
         if (errorText != null) ...[
-          const SizedBox(height: 6),
+          const SizedBox(height: 5),
           Text(
             errorText!,
             style: const TextStyle(
               color: AppColors.error,
               fontSize: 12,
               fontWeight: FontWeight.w500,
+            ),
+          ),
+        ] else if (helperText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            helperText!,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              height: 1.4,
             ),
           ),
         ],
