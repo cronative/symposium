@@ -19,3 +19,8 @@ build/
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# SyyncIn projects live in their own repos (cronative/syyncin_api, syyncin_admin, syyncin_app)
+/syyncin_api/
+/syyncin_admin/
+/syyncin_app/
