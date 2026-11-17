@@ -13,3 +13,9 @@ venv/
 # Build outputs
 dist/
 build/
+
+# Local archives / backups
+*.zip
+
+# TypeScript incremental build info
+*.tsbuildinfo

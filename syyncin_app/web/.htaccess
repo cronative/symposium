@@ -1,0 +1,22 @@
+# Hostinger (Apache / LiteSpeed + Hostinger CDN) — copied into build/web by `flutter build web`.
+
+# Flutter's file names (main.dart.js, assets/…) don't change between builds, so the
+# CDN and browsers must re-check them on every load, or an upload keeps serving the
+# old app for days. "no-cache" still uses the copy when unchanged (304, no download).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js|mjs|json|wasm|bin|map|png|jpg|jpeg|webp|svg|ico|txt)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # Fonts never change — cache them for a month.
+  <FilesMatch "\.(ttf|otf|woff2?)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>
+
+# Unknown paths open the app (safe even though the app uses #/ routes).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . index.html [L]
+</IfModule>
